@@ -13,7 +13,15 @@ Peggy is a CLI that helps you manages Terraform variables stored and loaded via 
 yarn global add @voltronstudio/peggy
 ```
 
-Usage:
+We also provide a Docker image so installation isn't necessary:
+
+```bash
+docker run -it --rm -v $(pwd)/:/app -w /app voltronstudio/peggy:latest status
+```
+
+The `ENTRYPOINT` is the executable `peg`. See the Dockerfile for more details.
+
+## Usage
 
 ```bash
 # Fetch the current status of your state by parsing your config
@@ -41,6 +49,9 @@ Install dependencies:
 
 ```bash
 yarn
+
+yarn build
+yarn start
 ```
 
 Run tests:
