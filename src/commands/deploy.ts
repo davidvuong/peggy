@@ -19,7 +19,7 @@ export const DeployCommand = (service: string, command: Command): void => {
   const options: Options = Schema.validate({
     service,
     config: command.config,
-    environment: command.environment,
+    environment: command.env,
     push: command.push ?? false,
   }).value;
 
