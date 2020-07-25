@@ -35,6 +35,10 @@ peg deploy <service> --env=production
 
 # Fetches images in ECR to deploy, using the default env, commits, and pushes
 peg deploy <service> --push
+
+# Sets the value in service given the object path
+peg set <service> replicas 3
+peg set <service> containers[0].resources.limits.memory 1024Mi
 ```
 
 ## Development
