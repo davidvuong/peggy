@@ -1,6 +1,6 @@
 {
   "services": {
-    "service-a": {
+    "zoro": {
       "replicas": 3,
       "containers": [
         {
@@ -45,7 +45,7 @@
         }
       ]
     },
-    "service-b": {
+    "luffy": {
       "replicas": 1,
       "containers": [
         {
@@ -85,7 +85,7 @@
         }
       ]
     },
-    "service-c": {
+    "chopper": {
       "replicas": 1,
       "containers": [
         {
