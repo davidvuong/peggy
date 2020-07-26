@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import Joi from 'joi';
+import consola from 'consola';
 
 interface Options {
   service?: string;
@@ -7,19 +8,21 @@ interface Options {
   environment?: string;
 }
 
-const Schema = Joi.object({
-  service: Joi.string(),
-  config: Joi.string().required(),
-  environment: Joi.string(),
-});
+const Options = {
+  schema: Joi.object({
+    service: Joi.string(),
+    config: Joi.string().required(),
+    environment: Joi.string(),
+  }),
+};
 
 export const StatusCommand = (service: string, command: Command): void => {
-  const options: Options = Schema.validate({
+  const options: Options = Options.schema.validate({
     service,
     config: command.config,
     environment: command.env,
   }).value;
 
-  console.log(options);
-  console.log('At the status command.');
+  consola.success(options);
+  consola.success('At the status command.');
 };

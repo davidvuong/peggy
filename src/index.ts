@@ -1,8 +1,8 @@
 import { program } from 'commander';
 import pkg from '../package.json';
-import { DeployCommand } from './commands/deploy';
-import { StatusCommand } from './commands/status';
-import { SetCommand } from './commands/set';
+import { DeployCommand } from './commands/DeployCommand';
+import { StatusCommand } from './commands/StatusCommand';
+import { SetCommand } from './commands/SetCommand';
 
 program.version(`Peggy v${pkg.version}`);
 

@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import Joi from 'joi';
+import consola from 'consola';
 
 interface Options {
   service: string;
@@ -8,21 +9,23 @@ interface Options {
   push: boolean;
 }
 
-const Schema = Joi.object({
-  service: Joi.string().required(),
-  config: Joi.string().required(),
-  environment: Joi.string(),
-  push: Joi.boolean().required(),
-});
+const Options = {
+  schema: Joi.object({
+    service: Joi.string().required(),
+    config: Joi.string().required(),
+    environment: Joi.string(),
+    push: Joi.boolean().required(),
+  }),
+};
 
 export const DeployCommand = (service: string, command: Command): void => {
-  const options: Options = Schema.validate({
+  const options: Options = Options.schema.validate({
     service,
     config: command.config,
     environment: command.env,
     push: command.push ?? false,
   }).value;
 
-  console.log(options);
-  console.log('At the deploy command.');
+  consola.success(options);
+  consola.success('At the deploy command.');
 };

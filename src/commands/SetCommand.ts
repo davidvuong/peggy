@@ -1,5 +1,6 @@
 import { Command } from 'commander';
+import consola from 'consola';
 
 export const SetCommand = (service: string, command: Command): void => {
-  console.log('At the set command.');
+  consola.success('At the set command.');
 };
