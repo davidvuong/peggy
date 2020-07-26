@@ -43,7 +43,7 @@ export interface Service {
 
 export const Service = {
   schema: Joi.object({
-    replcas: Joi.number().integer().positive().required(),
+    replicas: Joi.number().integer().positive().required(),
     containers: Joi.array().min(1).items(Container.schema).required(),
   }),
 };

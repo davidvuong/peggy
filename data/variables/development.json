@@ -1,7 +1,7 @@
 {
   "services": {
     "service-a": {
-      "replcas": 3,
+      "replicas": 3,
       "containers": [
         {
           "name": "api",
@@ -46,7 +46,7 @@
       ]
     },
     "service-b": {
-      "replcas": 1,
+      "replicas": 1,
       "containers": [
         {
           "name": "api",
@@ -86,7 +86,7 @@
       ]
     },
     "service-c": {
-      "replcas": 1,
+      "replicas": 1,
       "containers": [
         {
           "name": "api",

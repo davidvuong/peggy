@@ -1,0 +1,5 @@
+{
+  "defaultEnvironment": "development",
+  "defaultAwsProfile": "default",
+  "variablesPath": "./data/variables"
+}

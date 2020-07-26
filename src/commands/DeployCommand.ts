@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import Joi from 'joi';
-import consola from 'consola';
+import { loadAndParseVariables } from '../services/VariablesParser';
+import { loadAndParseConfig } from '../services/ConfigParser';
 
 interface Options {
   service: string;
@@ -18,14 +19,15 @@ const Options = {
   }),
 };
 
-export const DeployCommand = (service: string, command: Command): void => {
+export const DeployCommand = async (service: string, command: Command): Promise<void> => {
   const options: Options = Options.schema.validate({
     service,
     config: command.config,
     environment: command.env,
     push: command.push ?? false,
   }).value;
+  const config = await loadAndParseConfig(options.config);
 
-  consola.success(options);
-  consola.success('At the deploy command.');
+  const environment = options.environment ?? config.defaultEnvironment;
+  const variables = await loadAndParseVariables(`${config.variablesPath}/${environment}.json`);
 };
