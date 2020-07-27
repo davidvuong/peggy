@@ -15,6 +15,7 @@
     "lint": "yarn pretty && yarn eslint"
   },
   "devDependencies": {
+    "@types/cli-table": "0.3.0",
     "@types/jest": "26.0.6",
     "@types/joi": "14.3.4",
     "@types/lodash": "4.14.158",
@@ -35,9 +36,11 @@
     "typescript": "3.9.7"
   },
   "dependencies": {
-    "aws-sdk": "2.719.0",
+    "aws-sdk": "2.720.0",
+    "cli-table": "0.3.1",
     "commander": "6.0.0",
     "consola": "2.14.0",
+    "enquirer": "2.3.6",
     "joi": "17.1.1",
     "lodash": "4.17.19"
   }
