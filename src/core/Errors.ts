@@ -11,7 +11,7 @@ export class JsonValidationError extends PeggyError {
       const firstError = head((error.details || []).map(d => d.message))?.replace(/"/g, "'");
       errorMessage = `DecodeJsonError: ${firstError ?? 'Unknown'}`;
     } else {
-      errorMessage = `${error.toString()}`;
+      errorMessage = error.toString();
     }
     return new this(errorMessage) as InstanceType<T>;
   }
