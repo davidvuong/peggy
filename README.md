@@ -31,14 +31,21 @@ peg status
 peg status <service>
 
 # Fetch images in registry to deploy, targets production, and commits without pushing
-peg deploy <service> --env=production
+peg bump <service> --env=production
 
 # Fetches images in ECR to deploy, using the default env, commits, and pushes
-peg deploy <service> --push
+peg bump <service> --push
+
+# Fetches images from a differently name repository (by default it uses the same name as <service>)
+peg bump <service> <repository>
 
 # Sets the value in service given the object path
 peg set <service> replicas 3
 peg set <service> containers[0].resources.limits.memory 1024Mi
+
+# See help for more details
+peg --help
+peh <command> --help
 ```
 
 ## Development
