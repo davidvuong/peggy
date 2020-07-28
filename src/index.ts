@@ -1,6 +1,6 @@
 import { program } from 'commander';
 import pkg from '../package.json';
-import { DeployCommand } from './commands/DeployCommand';
+import { BumpCommand } from './commands/BumpCommand';
 import { StatusCommand } from './commands/StatusCommand';
 import { SetCommand } from './commands/SetCommand';
 
@@ -14,13 +14,13 @@ program
   .action(StatusCommand);
 
 program
-  .command('deploy <service>')
+  .command('bump <service> [repository]')
   .option('-c --config <path>', 'set the config', '.peggy')
   .option('-e --env <environment>', 'override the default environment in the config')
   .option('--push', 'pushes the generated commit the configured remote')
-  .description('deploys a specific version of your specified service')
-  .alias('d')
-  .action(DeployCommand);
+  .description('bumps an image in your repository to a container in your service')
+  .alias('b')
+  .action(BumpCommand);
 
 program
   .command('set <service> <key> <value>')

@@ -20,3 +20,5 @@ export class JsonValidationError extends PeggyError {
 export class DecodeJsonError extends JsonValidationError {}
 
 export class EncodeJsonError extends JsonValidationError {}
+
+export class InputError extends PeggyError {}
