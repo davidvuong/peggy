@@ -5,13 +5,13 @@ import consola from 'consola';
 import { find, includes } from 'lodash';
 import Table from 'cli-table';
 import { NumberPrompt, Select } from 'enquirer';
-import { loadAndParseVariables, persistVariables } from '../services/VariablesParser';
-import { loadAndParseConfig } from '../services/ConfigParser';
+import { persistVariables } from '../services/VariablesParser';
 import { AwsEcrRegistryService } from '../services/AwsEcrRegistryService';
 import { Repository } from '../typed/core/Repository';
 import { Image } from '../typed/core/Image';
 import { InputError } from '../core/Errors';
 import { Container } from '../typed/Variables';
+import { getHumanFileSize, getServiceRepository, getContext } from '../core/Utils';
 
 interface Options {
   service: string;
@@ -30,35 +30,6 @@ const Options = {
     push: Joi.boolean().required(),
   }),
 };
-
-// @see: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
-const getHumanFileSize = (bytes: number, si = false, dp = 1): string => {
-  const thresh = si ? 1000 : 1024;
-
-  if (Math.abs(bytes) < thresh) {
-    return `${bytes} B`;
-  }
-
-  const units = si
-    ? ['kB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-    : ['KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
-  let u = -1;
-  const r = 10 ** dp;
-
-  do {
-    // eslint-disable-next-line no-param-reassign
-    bytes /= thresh;
-    // eslint-disable-next-line no-plusplus
-    ++u;
-  } while (Math.round(Math.abs(bytes) * r) / r >= thresh && u < units.length - 1);
-
-  return `${bytes.toExponential(dp)} ${units[u]}`;
-};
-
-const normalizeServiceName = (text: string): string => text.toLowerCase().replace(/[^\w\s]|_/g, '');
-
-const getServiceRepository = (serviceName: string, repositories: Repository[]): Repository | undefined =>
-  find(repositories, ({ name }) => normalizeServiceName(name) === serviceName);
 
 const promptImageSelection = async (
   repository: Repository,
@@ -123,12 +94,7 @@ export const BumpCommand = async (
       environment: command.env,
       push: command.push ?? false,
     }).value;
-    const config = await loadAndParseConfig(options.config);
-    const environment = options.environment ?? config.defaultEnvironment;
-
-    const variablesPath = `${config.variablesPath}/${environment}.json`;
-    consola.info(`Loading Terraform project variables: "${variablesPath}"`);
-    const variables = await loadAndParseVariables(variablesPath);
+    const { config, variables, variablesPath } = await getContext(options.config, options.environment);
 
     const awsCredentials = new SharedIniFileCredentials({ profile: config.defaultAwsProfile });
     const awsEcrClient = new ECR({ credentials: awsCredentials, region: config.defaultAwsRegion });

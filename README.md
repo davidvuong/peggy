@@ -23,7 +23,7 @@ The `ENTRYPOINT` is the executable `peg`. See the Dockerfile for more details.
 
 ## Usage
 
-```bash
+```
 # Fetch the current status of your state by parsing your config
 peg status
 
