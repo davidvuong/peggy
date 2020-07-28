@@ -129,7 +129,7 @@ export const BumpCommand = async (
     const variables = await loadAndParseVariables(variablesPath);
 
     const awsCredentials = new SharedIniFileCredentials({ profile: config.defaultAwsProfile });
-    const awsEcrClient = new ECR({ credentials: awsCredentials, region: 'ap-southeast-2' });
+    const awsEcrClient = new ECR({ credentials: awsCredentials, region: config.defaultAwsRegion });
     const awsEcrRegistry = new AwsEcrRegistryService(awsEcrClient);
 
     if (!variables.services[options.service]) {

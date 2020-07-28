@@ -1,5 +1,6 @@
 {
   "defaultEnvironment": "development",
   "defaultAwsProfile": "default",
+  "defaultAwsRegion": "ap-southeast-2",
   "variablesPath": "./data/variables"
 }
