@@ -66,6 +66,8 @@ const promptImageSelection = async (
 ): Promise<{ image: Image; tag: string }> => {
   const table = new Table({
     head: ['Idx', 'Tag', 'Pushed At', 'Size'],
+    // @see: https://github.com/Automattic/cli-table#custom-styles
+    chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
     colWidths: [5, 70, 60, 15],
   });
 
@@ -146,18 +148,24 @@ export const BumpCommand = async (
     consola.success(`Found your repository: "${options.repository}"! Fetching images and tags...`);
     const images = await awsEcrRegistry.getImagesByRepository(repository);
 
-    consola.info(`Found ${images.length} image(s) for "${repository.uri}"`);
-    const { tag } = await promptImageSelection(repository, images);
-    const fqin = `${repository.uri}:${tag}`;
+    if (images.length === 0) {
+      consola.info(`There were no images found for repository: "${repository.name}"`);
+    } else {
+      consola.info(`Found ${images.length} image(s) for "${repository.uri}"`);
+      const { tag } = await promptImageSelection(repository, images);
+      const fqin = `${repository.uri}:${tag}`;
 
-    consola.info(`Performing update: ${fqin}`);
-    const { containers } = variables.services[options.service];
-    const container =
-      containers.length === 1 ? containers[0] : await promptContainerSelection(options.service, containers);
-    container.image = fqin;
-    await persistVariables(variablesPath, variables);
+      consola.info(`Performing update: ${fqin}`);
+      const { containers } = variables.services[options.service];
+      const container =
+        containers.length === 1 ? containers[0] : await promptContainerSelection(options.service, containers);
 
-    consola.success(`Updated! ${options.service}.${container.name}.image:${fqin}`);
+      consola.info(`Previous image: ${container.image}`);
+      container.image = fqin;
+      await persistVariables(variablesPath, variables);
+
+      consola.success(`Updated! ${options.service}.${container.name}.image:${fqin}`);
+    }
   } catch (err) {
     if (err.message) {
       consola.error(err.message);
