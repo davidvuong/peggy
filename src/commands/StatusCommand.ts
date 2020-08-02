@@ -38,10 +38,12 @@ export const StatusCommand = async (app: string | undefined, command: Command): 
     const appsTable = new Table({
       chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
       head: ['App', 'Replicas', 'Containers'],
+      style: { border: ['white'] },
     });
     const containersTable = new Table({
       chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
       head: ['App', 'Container', 'Image', 'CPU (request / limit)', 'Memory (request / limit)'],
+      style: { border: ['white'] },
     });
 
     let appNames = Object.keys(variables.apps);

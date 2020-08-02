@@ -6,7 +6,7 @@ import { loadAndParseVariables } from '../services/VariablesParser';
 import { AppContext } from '../typed/core/AppContext';
 
 // @see: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
-export const getHumanFileSize = (bytes: number, dp = 1): string => {
+export const getHumanFileSize = (bytes: number, dp = 2): string => {
   const threshold = 1024;
 
   if (Math.abs(bytes) < threshold) {
@@ -24,7 +24,7 @@ export const getHumanFileSize = (bytes: number, dp = 1): string => {
     ++u;
   } while (Math.round(Math.abs(bytes) * r) / r >= threshold && u < units.length - 1);
 
-  return `${bytes.toFixed(dp)}${units[u]}`;
+  return `${bytes.toFixed(dp)} ${units[u]}`;
 };
 
 export const normalizeAppName = (text: string): string => text.toLowerCase().replace(/[^\w\s]|_/g, '');
