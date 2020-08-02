@@ -45,24 +45,24 @@ export const StatusCommand = async (app: string | undefined, command: Command): 
     appNames.forEach(appName => {
       const { replicas, containers } = variables.apps[appName];
       if (isContainer(containers)) {
-        appsTable.push({ 'App': appName, 'Replicas': replicas, 'Containers': 1 });
+        appsTable.push({ App: appName, Replicas: replicas, Containers: 1 });
         containersTable.push({
-          'App': appName,
-          'Container': appName,
-          'Image': containers.image,
-          'CPU': `${containers.resources.requests.cpu} / (limit) ${containers.resources.limits.cpu}`,
-          'Memory': `${containers.resources.requests.memory} / (limit) ${containers.resources.limits.memory}`,
-        })
+          App: appName,
+          Container: appName,
+          Image: containers.image,
+          CPU: `${containers.resources.requests.cpu} / (limit) ${containers.resources.limits.cpu}`,
+          Memory: `${containers.resources.requests.memory} / (limit) ${containers.resources.limits.memory}`,
+        });
       } else {
-        appsTable.push({ 'App': appName, 'Replicas': replicas, 'Containers': Object.keys(containers).length });
+        appsTable.push({ App: appName, Replicas: replicas, Containers: Object.keys(containers).length });
         Object.keys(containers).forEach(containerName => {
           const { image, resources } = containers[containerName];
           containersTable.push({
-            'App': appName,
-            'Container': containerName,
-            'Image': image,
-            'CPU': `${resources.requests.cpu} / (limit) ${resources.limits.cpu}`,
-            'Memory': `${resources.requests.memory} / (limit) ${resources.limits.memory}`,
+            App: appName,
+            Container: containerName,
+            Image: image,
+            CPU: `${resources.requests.cpu} / (limit) ${resources.limits.cpu}`,
+            Memory: `${resources.requests.memory} / (limit) ${resources.limits.memory}`,
           });
         });
       }

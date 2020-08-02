@@ -37,8 +37,8 @@ const promptImageSelection = async (
   const table = [] as Record<string, any>;
 
   images.forEach(image =>
-    image.tags.forEach(t =>
-      table.push({ 'Tag': t, 'Pushed at': image.pushedAt.toString(), 'Size': getHumanFileSize(image.sizeInBytes) })
+    (image.tags ?? []).forEach(t =>
+      table.push({ Tag: t, 'Pushed at': image.pushedAt.toString(), Size: getHumanFileSize(image.sizeInBytes) }),
     ),
   );
 
@@ -63,10 +63,7 @@ const promptImageSelection = async (
   }
 };
 
-const promptContainerSelection = async (
-  appName: string,
-  containers: Record<string, Container>,
-): Promise<Container> => {
+const promptContainerSelection = async (appName: string, containers: Record<string, Container>): Promise<Container> => {
   const prompt = new Select({
     name: 'container',
     message: `Found ${containers.length} containers in specified app: "${appName}". Choose one`,
@@ -116,9 +113,7 @@ export const BumpCommand = async (
       const fqin = `${repository.uri}:${tag}`;
 
       const { containers } = variables.apps[options.app];
-      const container = isContainer(containers)
-        ? containers
-        : await promptContainerSelection(options.app, containers);
+      const container = isContainer(containers) ? containers : await promptContainerSelection(options.app, containers);
 
       consola.info(`Previous image: ${container.image}`);
       container.image = fqin;
