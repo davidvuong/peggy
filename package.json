@@ -6,6 +6,9 @@
   "repository": "git@github.com:voltronstudio/peggy.git",
   "author": "David Vuong <david.vuong@voltron.studio>",
   "license": "MIT",
+  "bin": {
+    "peg": "./build/src"
+  },
   "scripts": {
     "start": "ts-node ./src",
     "build": "tsc",
