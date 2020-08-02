@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import Joi from 'joi';
 import { ECR, SharedIniFileCredentials } from 'aws-sdk';
 import consola from 'consola';
-import { find, includes } from 'lodash';
+import { find, includes, some } from 'lodash';
 import { NumberPrompt, Select } from 'enquirer';
 import { persistVariables } from '../services/VariablesParser';
 import { AwsEcrRegistryService } from '../services/AwsEcrRegistryService';
@@ -35,13 +35,15 @@ const Options = {
 const promptImageSelection = async (
   repository: Repository,
   images: Image[],
+  existingImages: string[],
 ): Promise<{ image: Image; tag: string }> => {
-  const table = [] as Record<string, any>;
-
+  const table = [] as Record<string, any>[];
   images.forEach(image =>
-    (image.tags ?? []).forEach(t =>
-      table.push({ Tag: t, 'Pushed at': image.pushedAt.toString(), Size: getHumanFileSize(image.sizeInBytes) }),
-    ),
+    (image.tags ?? []).forEach(t => {
+      const isTagPreExisting = some(existingImages.map(i => i.endsWith(t)));
+      const tag = isTagPreExisting ? `${t} (*)` : t;
+      table.push({ Tag: tag, 'Pushed at': image.pushedAt.toString(), Size: getHumanFileSize(image.sizeInBytes) });
+    }),
   );
 
   // eslint-disable-next-line no-console
@@ -58,7 +60,7 @@ const promptImageSelection = async (
       throw new InputError(`The "Idx" you specified was invalid. Choose between "0-${table.length - 1}": ${index}`);
     }
 
-    const tag = table[index][1];
+    const tag = table[index].Tag;
     return { tag, image: find(images, ({ tags }) => includes(tags, tag)) as Image };
   } catch (err) {
     throw err instanceof InputError ? new InputError(err.message) : err;
@@ -112,10 +114,10 @@ export const BumpCommand = async (
       consola.info(`There were no images found for repository: "${repository.name}"`);
     } else {
       consola.info(`Found ${images.length} image(s) for "${repository.uri}"`);
-      const { tag } = await promptImageSelection(repository, images);
-      const fqin = `${repository.uri}:${tag}`;
-
       const { containers } = variables.apps[options.app];
+      const existingImages = isContainer(containers) ? [containers.image] : Object.values(containers).map(c => c.image);
+      const { tag } = await promptImageSelection(repository, images, existingImages);
+      const fqin = `${repository.uri}:${tag}`;
       const container = isContainer(containers) ? containers : await promptContainerSelection(options.app, containers);
 
       consola.info(`Previous image: ${container.image}`);
