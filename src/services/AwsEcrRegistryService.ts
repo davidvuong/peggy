@@ -14,9 +14,9 @@ export class AwsEcrRegistryService {
     }));
   };
 
-  getImagesByRepository = async (repository: Repository): Promise<Image[]> => {
+  getImagesByRepository = async (repository: Repository, maxResults: number): Promise<Image[]> => {
     const response = await this.client
-      .describeImages({ repositoryName: repository.name, maxResults: 100, filter: { tagStatus: 'TAGGED' } })
+      .describeImages({ repositoryName: repository.name, maxResults, filter: { tagStatus: 'TAGGED' } })
       .promise();
     const images = (response.imageDetails ?? []).map(({ imageDigest, imageTags, imageSizeInBytes, imagePushedAt }) => ({
       digest: imageDigest as string,

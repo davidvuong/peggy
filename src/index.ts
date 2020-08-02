@@ -19,6 +19,7 @@ program
   .command('bump <app> [repository]')
   .option('-c --config <path>', 'set the config', '.peggy')
   .option('-e --env <environment>', 'override the default environment in the config')
+  .option('-n --max-results <n>', 'maximum number of images to retrieve', '10')
   .option('--push', 'pushes the generated commit the configured remote')
   .option('--debug', 'displays stacktrace when errors occur', false)
   .description('bumps an image in your repository to a container in your app')

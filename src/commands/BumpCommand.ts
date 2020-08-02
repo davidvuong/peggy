@@ -18,6 +18,7 @@ interface Options {
   config: string;
   environment?: string;
   push: boolean;
+  maxResults: number;
 }
 
 const Options = {
@@ -27,6 +28,7 @@ const Options = {
     config: Joi.string().required(),
     environment: Joi.string(),
     push: Joi.boolean().required(),
+    maxResults: Joi.number().min(1).max(1000).required(),
   }),
 };
 
@@ -84,6 +86,7 @@ export const BumpCommand = async (
       config: command.config,
       environment: command.env,
       push: command.push ?? false,
+      maxResults: command.maxResults,
     }).value;
     const { config, variables, variablesPath } = await getContext(options.config, options.environment);
 
@@ -103,7 +106,7 @@ export const BumpCommand = async (
     }
 
     consola.success(`Found your repository: "${options.repository}"! Fetching images and tags...`);
-    const images = await awsEcrRegistry.getImagesByRepository(repository);
+    const images = await awsEcrRegistry.getImagesByRepository(repository, options.maxResults);
 
     if (images.length === 0) {
       consola.info(`There were no images found for repository: "${repository.name}"`);
