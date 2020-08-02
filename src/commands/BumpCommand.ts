@@ -3,7 +3,6 @@ import Joi from 'joi';
 import { ECR, SharedIniFileCredentials } from 'aws-sdk';
 import consola from 'consola';
 import { find, includes } from 'lodash';
-import Table from 'cli-table';
 import { NumberPrompt, Select } from 'enquirer';
 import { persistVariables } from '../services/VariablesParser';
 import { AwsEcrRegistryService } from '../services/AwsEcrRegistryService';
@@ -35,19 +34,16 @@ const promptImageSelection = async (
   repository: Repository,
   images: Image[],
 ): Promise<{ image: Image; tag: string }> => {
-  const table = new Table({
-    head: ['Idx', 'Tag', 'Pushed At', 'Size'],
-    // @see: https://github.com/Automattic/cli-table#custom-styles
-    chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
-    colWidths: [5, 70, 60, 15],
-  });
+  const table = [] as Record<string, any>;
 
-  images.forEach((image, imageIndex) =>
-    image.tags.forEach((t, tagIndex) =>
-      table.push([imageIndex + tagIndex, t, image.pushedAt, getHumanFileSize(image.sizeInBytes)]),
+  images.forEach(image =>
+    image.tags.forEach(t =>
+      table.push({ 'Tag': t, 'Pushed at': image.pushedAt.toString(), 'Size': getHumanFileSize(image.sizeInBytes) })
     ),
   );
-  consola.log(table.toString());
+
+  // eslint-disable-next-line no-console
+  console.table(table);
 
   const prompt = new NumberPrompt({
     name: 'number',
@@ -131,12 +127,10 @@ export const BumpCommand = async (
       consola.success(`Updated "${options.app}"! ${fqin}`);
     }
   } catch (err) {
-    if (command.debug) {
+    if (command.debug && err.stack) {
       consola.error(err.stack);
     } else if (err.message) {
       consola.error(err.message);
-    } else {
-      consola.error('An error occurred while processing your command --debug for more info');
     }
   }
 };
