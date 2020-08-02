@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import Joi from 'joi';
 import consola from 'consola';
+import Table from 'cli-table3';
 import { getContext } from '../core/Utils';
 import { InputError } from '../core/Errors';
 import { isContainer } from '../typed/Variables';
@@ -34,8 +35,14 @@ export const StatusCommand = async (app: string | undefined, command: Command): 
 
     consola.info(`Configured ${Object.keys(variables.apps).length} apps for environment: "${environment}"`);
 
-    const appsTable = [] as Record<string, any>[];
-    const containersTable = [] as Record<string, any>[];
+    const appsTable = new Table({
+      chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
+      head: ['App', 'Replicas', 'Containers'],
+    });
+    const containersTable = new Table({
+      chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
+      head: ['App', 'Container', 'Image', 'CPU (request / limit)', 'Memory (request / limit)'],
+    });
 
     let appNames = Object.keys(variables.apps);
     if (options.app) {
@@ -45,32 +52,32 @@ export const StatusCommand = async (app: string | undefined, command: Command): 
     appNames.forEach(appName => {
       const { replicas, containers } = variables.apps[appName];
       if (isContainer(containers)) {
-        appsTable.push({ App: appName, Replicas: replicas, Containers: 1 });
-        containersTable.push({
-          App: appName,
-          Container: appName,
-          Image: containers.image,
-          CPU: `${containers.resources.requests.cpu} / (limit) ${containers.resources.limits.cpu}`,
-          Memory: `${containers.resources.requests.memory} / (limit) ${containers.resources.limits.memory}`,
-        });
+        appsTable.push([appName, replicas, 1]);
+        containersTable.push([
+          appName,
+          appName,
+          containers.image,
+          `${containers.resources.requests.cpu} / ${containers.resources.limits.cpu}`,
+          `${containers.resources.requests.memory} / ${containers.resources.limits.memory}`,
+        ]);
       } else {
-        appsTable.push({ App: appName, Replicas: replicas, Containers: Object.keys(containers).length });
+        appsTable.push([appName, replicas, Object.keys(containers).length]);
         Object.keys(containers).forEach(containerName => {
           const { image, resources } = containers[containerName];
-          containersTable.push({
-            App: appName,
-            Container: containerName,
-            Image: image,
-            CPU: `${resources.requests.cpu} / (limit) ${resources.limits.cpu}`,
-            Memory: `${resources.requests.memory} / (limit) ${resources.limits.memory}`,
-          });
+          containersTable.push([
+            appName,
+            containerName,
+            image,
+            `${resources.requests.cpu} / ${resources.limits.cpu}`,
+            `${resources.requests.memory} / ${resources.limits.memory}`,
+          ]);
         });
       }
     });
 
     /* eslint-disable no-console */
-    console.table(appsTable);
-    console.table(containersTable);
+    consola.log(appsTable.toString());
+    consola.log(containersTable.toString());
     /* eslint-enable */
   } catch (err) {
     if (command.debug && err) {
