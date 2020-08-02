@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { isObject } from 'lodash';
 
 export interface CpuMemoryCaps {
   cpu: string;
@@ -13,47 +14,51 @@ export const CpuMemoryCaps = {
 };
 
 export interface Container {
-  name: string;
   image: string;
   resources: {
     requests: CpuMemoryCaps;
     limits: CpuMemoryCaps;
   };
   env?: Record<string, string>;
-  extras?: Record<string, string>;
+  extraArgs?: Record<string, string>;
 }
 
 export const Container = {
   schema: Joi.object({
-    name: Joi.string().required(),
     image: Joi.string().required(),
     resources: Joi.object({
       requests: CpuMemoryCaps.schema.required(),
       limits: CpuMemoryCaps.schema.required(),
     }).required(),
     env: Joi.object().pattern(Joi.string(), Joi.string()),
-    extras: Joi.object().pattern(Joi.string(), Joi.string()),
+    extraArgs: Joi.object().pattern(Joi.string(), Joi.string()),
   }),
 };
 
-export interface Service {
+export interface App {
   replicas: number;
-  containers: Container[];
+  containers: Record<string, Container> | Container;
 }
 
-export const Service = {
+export const App = {
   schema: Joi.object({
     replicas: Joi.number().integer().positive().required(),
-    containers: Joi.array().min(1).items(Container.schema).required(),
+    containers: Joi.alternatives()
+      .try(Joi.object().pattern(Joi.string(), Container.schema), Container.schema)
+      .required(),
   }),
 };
 
+export function isContainer(container: Container | Record<string, Container>): container is Container {
+  return !!(container as Container).image && isObject(container.resources);
+}
+
 export interface Variables {
-  services: Record<string, Service>;
+  apps: Record<string, App>;
 }
 
 export const Variables = {
   schema: Joi.object({
-    services: Joi.object().pattern(Joi.string(), Service.schema).required(),
+    apps: Joi.object().pattern(Joi.string(), App.schema).required(),
   }),
 };

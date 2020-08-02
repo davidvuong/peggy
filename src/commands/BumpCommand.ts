@@ -10,11 +10,11 @@ import { AwsEcrRegistryService } from '../services/AwsEcrRegistryService';
 import { Repository } from '../typed/core/Repository';
 import { Image } from '../typed/core/Image';
 import { InputError } from '../core/Errors';
-import { Container } from '../typed/Variables';
-import { getHumanFileSize, getServiceRepository, getContext } from '../core/Utils';
+import { Container, isContainer } from '../typed/Variables';
+import { getHumanFileSize, getAppRepository, getContext } from '../core/Utils';
 
 interface Options {
-  service: string;
+  app: string;
   repository: string;
   config: string;
   environment?: string;
@@ -23,7 +23,7 @@ interface Options {
 
 const Options = {
   schema: Joi.object({
-    service: Joi.string().required(),
+    app: Joi.string().required(),
     repository: Joi.string().required(),
     config: Joi.string().required(),
     environment: Joi.string(),
@@ -67,29 +67,27 @@ const promptImageSelection = async (
   }
 };
 
-const promptContainerSelection = async (serviceName: string, containers: Container[]): Promise<Container> => {
-  const promptMapping = containers.reduce((acc, container) => {
-    acc[container.name] = container;
-    return acc;
-  }, {} as Record<string, Container>);
-
+const promptContainerSelection = async (
+  appName: string,
+  containers: Record<string, Container>,
+): Promise<Container> => {
   const prompt = new Select({
     name: 'container',
-    message: `Found ${containers.length} containers in specified service: "${serviceName}". Choose one`,
-    choices: Object.keys(promptMapping),
+    message: `Found ${containers.length} containers in specified app: "${appName}". Choose one`,
+    choices: Object.keys(containers),
   });
-  return promptMapping[await prompt.run()];
+  return containers[await prompt.run()];
 };
 
 export const BumpCommand = async (
-  serviceName: string,
+  appName: string,
   repositoryName: string | undefined,
   command: Command,
 ): Promise<void> => {
   try {
     const options: Options = Options.schema.validate({
-      service: serviceName,
-      repository: repositoryName ?? serviceName,
+      app: appName,
+      repository: repositoryName ?? appName,
       config: command.config,
       environment: command.env,
       push: command.push ?? false,
@@ -100,12 +98,12 @@ export const BumpCommand = async (
     const awsEcrClient = new ECR({ credentials: awsCredentials, region: config.defaultAwsRegion });
     const awsEcrRegistry = new AwsEcrRegistryService(awsEcrClient);
 
-    if (!variables.services[options.service]) {
-      throw new InputError(`The specified service does not exist: "${options.service}"`);
+    if (!variables.apps[options.app]) {
+      throw new InputError(`The specified service does not exist: "${options.app}"`);
     }
 
     const repositories = await awsEcrRegistry.getRepositories();
-    const repository = getServiceRepository(options.repository, repositories);
+    const repository = getAppRepository(options.repository, repositories);
 
     if (!repository) {
       throw new InputError(`"${options.repository}" does not exist in your registry`);
@@ -121,20 +119,24 @@ export const BumpCommand = async (
       const { tag } = await promptImageSelection(repository, images);
       const fqin = `${repository.uri}:${tag}`;
 
-      consola.info(`Performing update: ${fqin}`);
-      const { containers } = variables.services[options.service];
-      const container =
-        containers.length === 1 ? containers[0] : await promptContainerSelection(options.service, containers);
+      const { containers } = variables.apps[options.app];
+      const container = isContainer(containers)
+        ? containers
+        : await promptContainerSelection(options.app, containers);
 
       consola.info(`Previous image: ${container.image}`);
       container.image = fqin;
       await persistVariables(variablesPath, variables);
 
-      consola.success(`Updated! ${options.service}.${container.name}.image:${fqin}`);
+      consola.success(`Updated "${options.app}"! ${fqin}`);
     }
   } catch (err) {
-    if (err.message) {
+    if (command.debug) {
+      consola.error(err.stack);
+    } else if (err.message) {
       consola.error(err.message);
+    } else {
+      consola.error('An error occurred while processing your command --debug for more info');
     }
   }
 };

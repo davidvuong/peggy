@@ -27,21 +27,17 @@ The `ENTRYPOINT` is the executable `peg`. See the Dockerfile for more details.
 # Fetch the current status of your state by parsing your config
 peg status
 
-# Fetch the current status for a specific service
-peg status <service>
+# Fetch the current status for a specific app
+peg status <app>
 
 # Fetch images in registry to deploy, targets production, and commits without pushing
-peg bump <service> --env=production
+peg bump <app> --env=production
 
 # Fetches images in ECR to deploy, using the default env, commits, and pushes
-peg bump <service> --push
+peg bump <app> --push
 
-# Fetches images from a differently name repository (by default it uses the same name as <service>)
-peg bump <service> <repository>
-
-# Sets the value in service given the object path
-peg set <service> replicas 3
-peg set <service> containers[0].resources.limits.memory 1024Mi
+# Fetches images from a differently name repository (by default it uses the same name as <app>)
+peg bump <app> <repository>
 
 # See help for more details
 peg --help

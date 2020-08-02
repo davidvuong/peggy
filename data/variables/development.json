@@ -1,108 +1,125 @@
 {
-  "services": {
+  "apps": {
     "zoro": {
-      "replicas": 3,
-      "containers": [
-        {
-          "name": "api",
-          "image": "kennethreitz/httpbin:latest",
-          "resources": {
-            "requests": {
-              "cpu": "1024m",
-              "memory": "2048Mi"
-            },
-            "limits": {
-              "cpu": "2048m",
-              "memory": "4Gi"
-            }
+      "replicas": 1,
+      "containers": {
+        "image":"kennethreitz/httpbin:latest",
+        "resources": {
+          "requests": {
+            "memory": "512Mi",
+            "cpu": "512m"
           },
-          "env": {
-            "LOG_LEVEL": "DEBUG",
-            "HTTP_PORT": "8080",
-            "DB_NAME": "postgres",
-            "DB_PORT": "5432",
-            "DB_USERNAME": "postgres",
-            "DB_PASSWORD": "abc123"
-          },
-          "extras": {
-            "SLEEP": "1000",
-            "freeformExtraConfig": "yes"
+          "limits": {
+            "memory": "512Mi",
+            "cpu": "512m"
           }
         },
-        {
-          "name": "db",
-          "image": "postgres:9.6.18",
-          "resources": {
-            "requests": {
-              "cpu": "512m",
-              "memory": "512Mi"
-            },
-            "limits": {
-              "cpu": "512m",
-              "memory": "2Gi"
-            }
-          }
+        "env": {
+          "LOG_LEVEL": "debug",
+          "HTTP_PORT": "8080"
+        },
+        "extraArgs": {
+          "SLEEP": "1000",
+          "freeformExtraConfig": "yes"
         }
-      ]
+      }
     },
     "luffy": {
-      "replicas": 1,
-      "containers": [
-        {
-          "name": "api",
-          "image": "kennethreitz/httpbin:latest",
-          "resources": {
-            "requests": {
-              "cpu": "256m",
-              "memory": "512Mi"
-            },
-            "limits": {
-              "cpu": "512m",
-              "memory": "1Gi"
-            }
+      "replicas": 3,
+      "containers": {
+        "image": "kennethreitz/httpbin:latest",
+        "resources": {
+          "requests": {
+            "memory": "1024Mi",
+            "cpu": "512m"
           },
-          "env": {
-            "LOG_LEVEL": "DEBUG",
-            "HTTP_PORT": "8080",
-            "RABBITMQ_HOST": "xxx",
-            "RABBITMQ_PORT": "yyy",
-            "RABBITMQ_QUEUE_NAME": "www"
+          "limits": {
+            "memory": "1024Mi",
+            "cpu": "512m"
           }
         },
-        {
-          "name": "rabbitmq",
-          "image": "rabbitmq:3.8.5",
-          "resources": {
-            "requests": {
-              "cpu": "512m",
-              "memory": "2048Mi"
-            },
-            "limits": {
-              "cpu": "512m",
-              "memory": "4Gi"
-            }
-          }
+        "env": {
+          "LOG_LEVEL": "debug",
+          "HTTP_PORT": "8080"
         }
-      ]
+      }
+    },
+    "sanji": {
+      "replicas": 1,
+      "containers": {
+        "image": "kennethreitz/httpbin:latest",
+        "resources": {
+          "requests": {
+            "memory": "512Mi",
+            "cpu": "768m"
+          },
+          "limits": {
+            "memory": "512Mi",
+            "cpu": "768m"
+          }
+        },
+        "env": {
+          "LOG_LEVEL": "DEBUG",
+          "HTTP_PORT": "8080"
+        }
+      }
     },
     "chopper": {
       "replicas": 1,
-      "containers": [
-        {
-          "name": "api",
+      "containers": {
+        "api": {
           "image": "kennethreitz/httpbin:latest",
           "resources": {
             "requests": {
-              "cpu": "256m",
-              "memory": "128Mi"
+              "memory": "1024Mi",
+              "cpu": "512m"
             },
             "limits": {
-              "cpu": "512m",
-              "memory": "512Mi"
+              "memory": "1024Mi",
+              "cpu": "512m"
             }
+          },
+          "env": {
+            "LOG_LEVEL": "debug"
+          }
+        },
+        "db": {
+          "image": "postgres:9.6.18",
+          "resources": {
+            "requests": {
+              "memory": "4096Mi",
+              "cpu": "1024m"
+            },
+            "limits": {
+              "memory": "4096Mi",
+              "cpu": "1024m"
+            }
+          },
+          "env": {
+            "LOG_LEVEL": "DEBUG",
+            "HTTP_PORT": "50051",
+            "MAX_RECV_SIZE": "64",
+            "MAX_SEND_SIZE": "64"
+          }
+        },
+        "tensorflow-serving": {
+          "image": "tensorflow/serving:2.2.0-gpu",
+          "resources": {
+            "requests": {
+              "memory": "1024Mi",
+              "cpu": "1024m"
+            },
+            "limits": {
+              "memory": "8192Mi",
+              "cpu": "4096m"
+            }
+          },
+          "env": {
+            "TF_CPP_MIN_LOG_LEVEL": "3",
+            "HTTP_PORT": "8500"
           }
         }
-      ]
+      }
     }
   }
 }

@@ -29,10 +29,10 @@ export const getHumanFileSize = (bytes: number, si = false, dp = 1): string => {
   return `${bytes.toExponential(dp)} ${units[u]}`;
 };
 
-export const normalizeServiceName = (text: string): string => text.toLowerCase().replace(/[^\w\s]|_/g, '');
+export const normalizeAppName = (text: string): string => text.toLowerCase().replace(/[^\w\s]|_/g, '');
 
-export const getServiceRepository = (serviceName: string, repositories: Repository[]): Repository | undefined =>
-  find(repositories, ({ name }) => normalizeServiceName(name) === serviceName);
+export const getAppRepository = (appName: string, repositories: Repository[]): Repository | undefined =>
+  find(repositories, ({ name }) => normalizeAppName(name) === appName);
 
 export const getContext = async (configPath: string, explicitEnvironment?: string): Promise<AppContext> => {
   const config = await loadAndParseConfig(configPath);

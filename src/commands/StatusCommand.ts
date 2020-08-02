@@ -4,64 +4,84 @@ import consola from 'consola';
 import Table from 'cli-table';
 import { getContext } from '../core/Utils';
 import { InputError } from '../core/Errors';
+import { isContainer } from '../typed/Variables';
 
 interface Options {
-  service?: string;
+  app?: string;
   config: string;
   environment?: string;
 }
 
 const Options = {
   schema: Joi.object({
-    service: Joi.string(),
+    app: Joi.string(),
     config: Joi.string().required(),
     environment: Joi.string(),
   }),
 };
 
-export const StatusCommand = async (service: string | undefined, command: Command): Promise<void> => {
+export const StatusCommand = async (app: string | undefined, command: Command): Promise<void> => {
   const options: Options = Options.schema.validate({
-    service,
+    app,
     config: command.config,
     environment: command.env,
   }).value;
   try {
     const { environment, variables } = await getContext(options.config, options.environment);
 
-    if (options.service && !variables.services[options.service]) {
-      throw new InputError(`The specified service does not exist: "${options.service}"`);
+    if (options.app && !variables.apps[options.app]) {
+      throw new InputError(`The specified app does not exist: "${options.app}"`);
     }
 
-    consola.info(`Configured ${Object.keys(variables.services).length} services for environment: "${environment}"`);
-    const table = new Table({
-      head: ['Service / Container', 'Image', 'Replicas', 'Containers', 'CPU', 'Memory'],
-      // @see: https://github.com/Automattic/cli-table#custom-styles
+    consola.info(`Configured ${Object.keys(variables.apps).length} apps for environment: "${environment}"`);
+    const appsTable = new Table({
+      head: ['App', 'Replicas', 'Containers'],
+      chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
+    });
+    const containersTable = new Table({
+      head: ['App', 'Container', 'Image', 'CPU', 'Memory'],
       chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
     });
 
-    let serviceNames = Object.keys(variables.services);
-    if (options.service) {
-      serviceNames = serviceNames.filter(s => s === options.service);
+    let appNames = Object.keys(variables.apps);
+    if (options.app) {
+      appNames = appNames.filter(s => s === options.app);
     }
 
-    serviceNames.forEach(serviceName => {
-      const { replicas, containers } = variables.services[serviceName];
-      table.push([serviceName, '', replicas, containers.length, '', '']);
-      containers.forEach(({ name, image, resources }) => {
-        table.push([
-          `${serviceName}.${name}`,
-          image,
-          '',
-          '',
-          `${resources.requests.cpu} / ${resources.limits.cpu}`,
-          `${resources.requests.memory} / ${resources.limits.memory}`,
+    appNames.forEach(appName => {
+      const { replicas, containers } = variables.apps[appName];
+      if (isContainer(containers)) {
+        appsTable.push([appName, replicas, 1]);
+        containersTable.push([
+          appName,
+          '-',
+          containers.image,
+          `${containers.resources.requests.cpu} / (limit) ${containers.resources.limits.cpu}`,
+          `${containers.resources.requests.memory} / (limit) ${containers.resources.limits.memory}`,
         ]);
-      });
+      } else {
+        appsTable.push([appName, replicas, containers.length]);
+        Object.keys(containers).forEach(containerName => {
+          const { image, resources } = containers[containerName];
+          containersTable.push([
+            appName,
+            containerName,
+            image,
+            `${resources.requests.cpu} / (limit) ${resources.limits.cpu}`,
+            `${resources.requests.memory} / (limit) ${resources.limits.memory}`,
+          ]);
+        });
+      }
     });
-    consola.log(table.toString());
+    consola.log(appsTable.toString());
+    consola.log(containersTable.toString());
   } catch (err) {
-    if (err.message) {
+    if (command.debug) {
+      consola.error(err.stack);
+    } else if (err.message) {
       consola.error(err.message);
+    } else {
+      consola.error('An error occurred while processing your command --debug for more info');
     }
   }
 };

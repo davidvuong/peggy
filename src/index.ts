@@ -7,26 +7,29 @@ import { SetCommand } from './commands/SetCommand';
 program.version(`Peggy v${pkg.version}`);
 
 program
-  .command('status [service]')
+  .command('status [app]')
   .option('-c --config <path>', 'set the config', '.peggy')
   .option('-e --env <environment>', 'override the default environment in the config')
-  .description('display the status of services in your cluster')
+  .option('--debug', 'displays stacktrace when errors occur', false)
+  .description('display the status of all apps in your cluster')
   .action(StatusCommand);
 
 program
-  .command('bump <service> [repository]')
+  .command('bump <app> [repository]')
   .option('-c --config <path>', 'set the config', '.peggy')
   .option('-e --env <environment>', 'override the default environment in the config')
   .option('--push', 'pushes the generated commit the configured remote')
-  .description('bumps an image in your repository to a container in your service')
+  .option('--debug', 'displays stacktrace when errors occur', false)
+  .description('bumps an image in your repository to a container in your app')
   .alias('b')
   .action(BumpCommand);
 
 program
-  .command('set <service> <key> <value>')
+  .command('set <app> <key> <value>')
   .option('-c --config <path>', 'set the config', '.peggy')
   .option('-e --env <environment>', 'override the default environment in the config')
   .option('--push', 'pushes the generated commit the configured remote')
+  .option('--debug', 'displays stacktrace when errors occur', false)
   .description('set the value of the given object path key')
   .action(SetCommand);
 

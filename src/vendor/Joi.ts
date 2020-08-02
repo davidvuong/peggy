@@ -2,7 +2,6 @@ import Joi from 'joi';
 import { isNil } from 'lodash';
 import { DecodeJsonError, EncodeJsonError } from '../core/Errors';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function decodeJson<A>(message: unknown, schema: Joi.Schema): A {
   if (isNil(message)) {
     throw new DecodeJsonError('Cannot decode an empty payload');
@@ -15,7 +14,7 @@ function decodeJson<A>(message: unknown, schema: Joi.Schema): A {
   return value as A;
 }
 
-function encodeJson<A>(obj: A, schema: Joi.Schema): A {
+function encodeAFromJson<A>(obj: A, schema: Joi.Schema): A {
   if (isNil(obj)) {
     throw new EncodeJsonError('Cannot encode an empty payload');
   }
@@ -27,4 +26,4 @@ function encodeJson<A>(obj: A, schema: Joi.Schema): A {
   return value;
 }
 
-export { Joi, decodeJson, encodeJson };
+export { Joi, decodeJson, encodeAFromJson };
