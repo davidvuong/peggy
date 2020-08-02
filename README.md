@@ -5,21 +5,28 @@
 
 **Welcome to peggy!**
 
-Peggy is a CLI that helps you manages Terraform variables stored and loaded via JSON files. The primary purpose is to help automate the process of viewing and selecting Docker images from registries such as DockerHub or AWS ECR. It was inspired based on work done in a separate tool [mimiron](https://github.com/davidvuong/mimiron) with similar goals. Since then the landscape has changed significantly.
+Peggy (or `peg` for short) is a CLI that helps you manage Terraform variables stored and loaded via JSON files. The primary goal is to ease the workflow necessary to pick and choose images to be used for deployment.
+
+Peggy helps by automating the process of connecting to a Docker registry, finding the image to deploy and updating the necessary files to have Terraform pick up changes. Peggy was inspired by previous work in a [similar tool (Mimiron)](https://github.com/davidvuong/mimiron) with related goals. Since then the landscape has changed significantly and Peggy is the next iteration of the same tooling.
+
+**Supported registeries:**
+
+- ECR
+- DockerHub (coming soon)
+
+TODO (INSERT GIF - see: https://gist.github.com/dergachev/4627207)
+
+## Workflow
+
+TODO
+
+## Variables.json
 
 ## Installation
 
 ```bash
 yarn global add @voltronstudio/peggy
 ```
-
-We also provide a Docker image so installation isn't necessary:
-
-```bash
-docker run -it --rm -v $(pwd)/:/app -w /app voltronstudio/peggy:latest status
-```
-
-The `ENTRYPOINT` is the executable `peg`. See the Dockerfile for more details.
 
 ## Usage
 
@@ -44,6 +51,10 @@ peg --help
 peh <command> --help
 ```
 
+## Configuration
+
+TODO
+
 ## Development
 
 Clone the repository:
@@ -67,3 +78,5 @@ Run tests:
 yarn test
 yarn test:coverage
 ```
+
+Peggy was built by [Volton Studio](https://www.voltron.studio/).
