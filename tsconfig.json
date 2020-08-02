@@ -9,7 +9,7 @@
     "module": "CommonJs",
     "lib": ["ES2018"],
     "target": "ES2019",
-    "typeRoots": ["./src/typed/vendor", "./node_modules/@types"],
+    "typeRoots": ["./src/typed/vendor", "./node_modules/@types"]
   },
-  "include": ["src", "__tests__", "scripts"],
+  "include": ["src", "__tests__", "scripts"]
 }

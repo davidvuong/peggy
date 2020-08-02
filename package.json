@@ -2,7 +2,7 @@
   "name": "peggy",
   "version": "0.0.1",
   "description": "Helps manage your Terraform JSON configuration variables",
-  "main": "./build/index.js",
+  "main": "./build/src/index.js",
   "repository": "git@github.com:voltronstudio/peggy.git",
   "author": "David Vuong <david.vuong@voltron.studio>",
   "license": "MIT",
