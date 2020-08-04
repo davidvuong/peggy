@@ -42,7 +42,7 @@ const promptImageSelection = async (
   const table = new Table({
     chars: { mid: '', 'left-mid': '', 'mid-mid': '', 'right-mid': '' },
     head: ['Idx', 'Tag', 'Pushed at', 'Size'],
-    style: { border: ['white'] }
+    style: { border: ['white'] },
   });
   const tagIndexMap = {} as Record<number, string>;
 
