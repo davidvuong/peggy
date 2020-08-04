@@ -11,7 +11,7 @@ Peggy helps by automating the process of connecting to a Docker registry, findin
 
 **Supported registeries:**
 
-- ECR
+- AWS ECR
 - DockerHub (coming soon)
 
 TODO (INSERT GIF - see: https://gist.github.com/dergachev/4627207)
@@ -83,7 +83,7 @@ A single directory holding all `<env>.json` variables. `Peggy` provides a `valid
 peg validate ./variables/development.json
 ```
 
-See [./data/variables/development.json](./data/variables/development.json) for a sample variables.json. Also, see [./examples/kubernetes/variables/development.json](./examples/kubernetes/variables/development.json).
+See [./data/variables](./data/variables/development.json) for a sample variables.json. Also, see [./examples/kubernetes/variables](./examples/kubernetes/variables/development.json).
 
 - `apps` is an object where the `key` is the name of your `application` e.g. `web`
 - Each value in `apps` is configuration specific to your `application`
