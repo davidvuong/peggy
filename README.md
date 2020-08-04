@@ -108,7 +108,7 @@ peg status --config ./data/config.json
 
 See [./data/config.json](./data/config.json) for a sample config.
 
-## Development
+## Contributing
 
 We're always happy to have others contribute to the project. To get started, clone the repository:
 
@@ -140,6 +140,21 @@ If you don't have your editor configured to autoformat (`eslint` & `prettier`) a
 ```bash
 yarn lint
 yarn build
+```
+
+## Publishing
+
+```bash
+yarn
+yarn build
+yarn lint
+
+# Bump version in package.json with.
+
+git tag "<version>"
+git push --tags
+
+yarn publish
 ```
 
 Made with ❤️ by [Voltron Studio](https://www.voltron.studio/)
