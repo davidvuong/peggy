@@ -14,7 +14,9 @@ Peggy helps by automating the process of connecting to a Docker registry, findin
 - AWS ECR
 - DockerHub (coming soon)
 
-TODO (INSERT GIF - see: https://gist.github.com/dergachev/4627207)
+<p align="center">
+  <img src="./data/images/demo.gif">
+</p>
 
 ## Workflow
 
