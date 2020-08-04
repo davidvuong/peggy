@@ -110,19 +110,16 @@ See [./data/config.json](./data/config.json) for a sample config.
 
 ## Development
 
-Clone the repository:
+We're always happy to have others contribute to the project. To get started, clone the repository:
 
 ```bash
 git clone git@github.com:voltronstudio/peggy.git
 ```
 
-Install dependencies:
+Install project dependencies:
 
 ```bash
 yarn
-
-yarn build
-yarn start
 ```
 
 Run tests:
@@ -130,6 +127,19 @@ Run tests:
 ```bash
 yarn test
 yarn test:coverage
+```
+
+Execute locally during development:
+
+```bash
+yarn ts-node ./src --help
+```
+
+If you don't have your editor configured to autoformat (`eslint` & `prettier`) and build (`tsc`):
+
+```bash
+yarn lint
+yarn build
 ```
 
 Made with ❤️ by [Voltron Studio](https://www.voltron.studio/)
