@@ -1,5 +1,5 @@
 {
-  "name": "peggy",
+  "name": "@voltronstudio/peggy",
   "version": "0.0.1",
   "description": "Helps manage your Terraform JSON configuration variables",
   "main": "./build/src/index.js",
@@ -9,6 +9,7 @@
   "bin": {
     "peg": "./build/src/index.js"
   },
+  "private": false,
   "scripts": {
     "start": "ts-node ./src",
     "build": "tsc",
