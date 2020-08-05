@@ -90,8 +90,8 @@ See [./data/variables](./data/variables/development.json) for a sample variables
 - `apps` is an object where the `key` is the name of your `application` e.g. `web`
 - Each value in `apps` is configuration specific to your `application`
 - An app can be thought of as a `pod` in Kubernetes or `service` in ECS
-- Each `pod` have _one or many_ containers. When there's just one container, you can `containers` can be an object rather than an array of objects
-- Each `container` has an optional `extraAgs` object. It's a freeform object where you can additional options
+- Each `pod` have _one or many_ containers. When there's just one container, your `containers` can be an object rather than an array of objects
+- Each `container` has an optional `extraAgs` object. It's a freeform object where you can pass additional options
 
 ## Configuration
 
