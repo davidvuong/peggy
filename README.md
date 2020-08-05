@@ -155,7 +155,7 @@ yarn lint
 git tag "<version>"
 git push --tags
 
-yarn publish
+yarn publish --access public --message "chore: bump to v<tag>" --tag <tag>
 ```
 
 Made with ❤️ by [Voltron Studio](https://www.voltron.studio/)
