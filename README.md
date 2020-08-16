@@ -147,16 +147,11 @@ yarn build
 ## Publishing
 
 ```bash
-yarn
-yarn build
-yarn lint
-
-# Bump version in package.json with.
-
-git tag "<version>"
-git push --tags
-
-VERSION=0.0.1 yarn publish --access public --message "chore: bump to v$VERSION" --tag $VERSION
+yarn \
+  && yarn lint \
+  && yarn version --patch --message "chore: bump peggy version" \
+  && yarn build \
+  && yarn publish --no-git-tag-version
 ```
 
 Made with :hearts: by [Voltron Studio](https://www.voltron.studio/)
