@@ -13,6 +13,7 @@ Peggy helps by automating the process of connecting to a Docker registry, findin
 **Supported registeries:**
 
 - AWS ECR
+- Google Container Registry (coming soon)
 - DockerHub (coming soon)
 
 <p align="center">
@@ -155,7 +156,7 @@ yarn lint
 git tag "<version>"
 git push --tags
 
-yarn publish --access public --message "chore: bump to v<tag>" --tag <tag>
+VERSION=0.0.1 yarn publish --access public --message "chore: bump to v$VERSION" --tag $VERSION
 ```
 
-Made with ❤️ by [Voltron Studio](https://www.voltron.studio/)
+Made with :hearts: by [Voltron Studio](https://www.voltron.studio/)
