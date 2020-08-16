@@ -12,7 +12,7 @@
   "private": false,
   "scripts": {
     "start": "ts-node ./src",
-    "build": "tsc",
+    "build": "rm -rf ./build && tsc",
     "test": "jest",
     "eslint": "eslint '{src,__tests__,scripts}/**/*.ts' --fix",
     "pretty": "prettier '{src,__tests__,scripts}/**/*.ts' --write",
