@@ -151,7 +151,7 @@ yarn \
   && yarn lint \
   && yarn version --patch --message "chore: bump peggy version" \
   && yarn build \
-  && yarn publish --no-git-tag-version
+  && yarn publish --no-git-tag-version --access public --non-interactive
 ```
 
 Made with :hearts: by [Voltron Studio](https://www.voltron.studio/)
