@@ -1,6 +1,6 @@
 {
   "name": "@voltronstudio/peggy",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Helps manage your Terraform JSON configuration variables",
   "main": "./build/src/index.js",
   "repository": "git@github.com:voltronstudio/peggy.git",
