@@ -42,7 +42,7 @@ export interface App {
 
 export const App = {
   schema: Joi.object({
-    replicas: Joi.number().integer().positive().required(),
+    replicas: Joi.number().integer().min(0).required(),
     containers: Joi.alternatives()
       .try(Joi.object().pattern(Joi.string(), Container.schema), Container.schema)
       .required(),
