@@ -2,7 +2,7 @@ import { Command } from 'commander';
 import Joi from 'joi';
 import { ECR, SharedIniFileCredentials } from 'aws-sdk';
 import consola from 'consola';
-import { find, includes, some } from 'lodash';
+import { find, includes, some, isEmpty } from 'lodash';
 import { NumberPrompt, Select } from 'enquirer';
 import Table from 'cli-table3';
 import colors from 'colors';
@@ -12,7 +12,7 @@ import { Repository } from '../typed/core/Repository';
 import { Image } from '../typed/core/Image';
 import { InputError } from '../core/Errors';
 import { Container, isContainer } from '../typed/Variables';
-import { getHumanFileSize, getAppRepository, getContext } from '../core/Utils';
+import { getHumanFileSize, getAppRepository, getContext, getHumanFriendlyDateTime } from '../core/Utils';
 
 interface Options {
   app: string;
@@ -52,7 +52,7 @@ const promptImageSelection = async (
       const isTagPreExisting = some(existingImages.map(i => i.endsWith(t)));
       const tag = isTagPreExisting ? `${t} ${colors.green('(*)')}` : t;
       tagIndexMap[index] = t;
-      table.push([index, tag, image.pushedAt.toString(), getHumanFileSize(image.sizeInBytes)]);
+      table.push([index, tag, getHumanFriendlyDateTime(image.pushedAt), getHumanFileSize(image.sizeInBytes)]);
     }),
   );
   consola.log(table.toString());
@@ -78,7 +78,7 @@ const promptImageSelection = async (
 const promptContainerSelection = async (appName: string, containers: Record<string, Container>): Promise<Container> => {
   const prompt = new Select({
     name: 'container',
-    message: `Found ${containers.length} containers in specified app: "${appName}". Choose one`,
+    message: `Found ${Object.keys(containers).length} containers in specified app: "${appName}". Choose one`,
     choices: Object.keys(containers),
   });
   return containers[await prompt.run()];
@@ -109,10 +109,13 @@ export const BumpCommand = async (
     }
 
     const repositories = await awsEcrRegistry.getRepositories();
-    const repository = getAppRepository(options.repository, repositories);
+    if (!isEmpty(repositories)) {
+      consola.success(`Found the following repositories! ${repositories.map(r => r.name).join(', ')}`);
+    }
 
+    const repository = getAppRepository(options.repository, repositories);
     if (!repository) {
-      throw new InputError(`"${options.repository}" does not exist in your registry`);
+      throw new InputError(`"${options.repository}" does not exist in your registry...`);
     }
 
     consola.success(`Found your repository: "${options.repository}"! Fetching images and tags...`);
