@@ -1,10 +1,10 @@
 import { find } from 'lodash';
 import consola from 'consola';
+import { format } from 'date-fns';
 import { Repository } from '../typed/core/Repository';
 import { loadAndParseConfig } from '../services/ConfigParser';
 import { loadAndParseVariables } from '../services/VariablesParser';
 import { AppContext } from '../typed/core/AppContext';
-import { format } from 'date-fns';
 
 // @see: https://stackoverflow.com/questions/10420352/converting-file-size-in-bytes-to-human-readable-string
 export const getHumanFileSize = (bytes: number, dp = 2): string => {
